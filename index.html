@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+     
+  <header>
+    <h1>Portal del Cliente</h1>
+    <nav>
+      <a href="#catalogo">Catálogo</a>
+      <a href="#catalogo">Ofertas</a>
+      <a href="#">Mis Pedidos</a>
+      <a href="#">Contacto</a>
+    </nav>
+  </header>
+
+  <section class="buscador">
+    <input type="text" id="inputBusqueda" placeholder="Buscar productos, marcas o códigos..." />
+    <select id="filtroCategoria">
+      <option value="">Todas las categorías</option>
+      <option value="Computación">Computación</option>
+      <option value="Accesorios">Accesorios</option>
+      <option value="Audio">Audio</option>
+      <option value="Oficina">Oficina</option>
+    </select>
+    <button onclick="buscar()">Buscar</button>
+  </section>
+
+  <main>
+    <h2>Catálogo de Productos</h2>
+    <div class="catalogo" id="catalogo"></div>
+  </main>
+
+  <footer>
+    Módulo Portal del Cliente (Ventas en línea)
+  </footer>
+  <script>
+    // Inventario simulado
+    const productos = [
+      { id: 1, nombre: "Notebook Pro 14\"", marca: "Lenovo", categoria: "Computación", precio: 899990, stock: 12, img: "https://picsum.photos/seed/notebook/400/300" },
+      { id: 2, nombre: "Mouse Inalámbrico", marca: "Logitech", categoria: "Accesorios", precio: 24990, stock: 45, img: "https://picsum.photos/seed/mouse/400/300" },
+      { id: 3, nombre: "Teclado Mecánico RGB", marca: "Redragon", categoria: "Accesorios", precio: 59990, stock: 0, img: "https://picsum.photos/seed/teclado/400/300" },
+      { id: 4, nombre: "Audífonos Bluetooth", marca: "Sony", categoria: "Audio", precio: 129990, stock: 8, img: "https://picsum.photos/seed/audifonos/400/300" },
+      { id: 5, nombre: "Monitor 27\" 4K", marca: "Samsung", categoria: "Computación", precio: 349990, stock: 5, img: "https://picsum.photos/seed/monitor/400/300" },
+      { id: 6, nombre: "Silla Ergonómica", marca: "ErgoLine", categoria: "Oficina", precio: 189990, stock: 3, img: "https://picsum.photos/seed/silla/400/300" },
+      { id: 7, nombre: "Webcam Full HD", marca: "Logitech", categoria: "Accesorios", precio: 45990, stock: 20, img: "https://picsum.photos/seed/webcam/400/300" },
+      { id: 8, nombre: "Parlante Portátil", marca: "JBL", categoria: "Audio", precio: 79990, stock: 0, img: "https://picsum.photos/seed/parlante/400/300" }
+    ];
+
+    function formatoCLP(n) {
+      return "$" + n.toLocaleString("es-CL");
+    }
+
+    function renderizar(lista) {
+      const cont = document.getElementById("catalogo");
+      cont.innerHTML = "";
+      if (lista.length === 0) {
+        cont.innerHTML = "<p>No se encontraron productos.</p>";
+        return;
+      }
+      lista.forEach(p => {
+        const disponible = p.stock > 0;
+        const card = document.createElement("div");
+        card.className = "producto";
+        card.innerHTML = `
+          <img src="${p.img}" alt="${p.nombre}" />
+          <div class="info">
+            <span class="marca">${p.marca} · ${p.categoria}</span>
+            <h3>${p.nombre}</h3>
+            <span class="precio">${formatoCLP(p.precio)}</span>
+            <span class="stock ${disponible ? 'disponible' : 'agotado'}">
+              ${disponible ? '✔ ' + p.stock + ' disponibles' : '✖ Sin stock'}
+            </span>
+            <button ${disponible ? '' : 'disabled'}>
+              ${disponible ? 'Agregar al carro' : 'Agotado'}
+            </button>
+          </div>
+        `;
+        cont.appendChild(card);
+      });
+    }
+
+    function buscar() {
+      const texto = document.getElementById("inputBusqueda").value.toLowerCase();
+      const categoria = document.getElementById("filtroCategoria").value;
+      const filtrados = productos.filter(p => {
+        const coincideTexto = p.nombre.toLowerCase().includes(texto) ||
+                              p.marca.toLowerCase().includes(texto) ||
+                              p.categoria.toLowerCase().includes(texto);
+        const coincideCat = !categoria || p.categoria === categoria;
+        return coincideTexto && coincideCat;
+      });
+      renderizar(filtrados);
+    }
+
+    // Búsqueda en vivo mientras se escribe (autocompletado básico)
+    document.getElementById("inputBusqueda").addEventListener("input", buscar);
+    document.getElementById("filtroCategoria").addEventListener("change", buscar);
+
+    // Render inicial
+    renderizar(productos);
+  </script>
+</body>
+</html>
