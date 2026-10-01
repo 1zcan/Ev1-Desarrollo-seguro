@@ -1,7 +1,7 @@
 # Ev1-Desarrollo-seguro
 
 # Integrantes:
-Orlando Aravena
+Orlando Aravena,
 Benjamin Valdebenito
 
 
